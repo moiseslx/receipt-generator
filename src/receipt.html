@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comprovante</title>
+    <link rel="stylesheet" href="../assets/css/receipt.css">
+</head>
+<body>
+    <div class="container" id="receipt">
+        <header>
+            <img src="../assets/images/logo.png" alt="AllTech Solutions">
+            <div class="header-info">
+                <p><strong>A V AZEVEDO</strong></p>
+                <p>AGAPTO PEREIRA, 7</p>
+                <p>PETROPOLIS - 69067-372 - MANAUS - AM</p>
+                <p>CNPJ: 32.149.814/0001-89</p>
+            </div>
+        </header>
+        <hr>
+
+        <section class="details">
+            <div class="details-day">
+                <p id="date"></p>
+            </div>
+            <div class="details-buyer">
+                <p>Comprovante para:</p>
+                <p id="buyer"></p>
+                <p id="company"></p>
+                <p id="address"></p>
+                <p id="cnpj"></p>
+            </div>
+        </section>
+
+        <section class="total">
+            <p>Valor Total</p>
+            <p id="total-value"></p>
+        </section>
+
+        <section class="list">
+            <table>
+                <thead>
+                    <tr>
+                        <th>PRODUTO</th>
+                        <th>QUANTIDADE</th>
+                    </tr>
+                </thead>
+                <tbody id="product-list">
+                    <!-- Dynamic product rows will be inserted here -->
+                </tbody>
+            </table>
+        </section>
+
+        <hr>
+
+        <section class="totals">
+            <div class="totals-container">
+                <div class="totals-left"></div>
+                <div class="totals-right">
+                    <p>Sub-total : <span id="sub-total">R$ 0,00</span></p>
+                    <p>Tax : <span id="tax">R$ 0,00</span></p>
+                    <hr>
+                    <p><strong>Total : <span id="total">R$ 0,00</span></strong></p>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <div class="footer-container">
+                <div class="contact-info">
+                    <p><strong>Contate-nos</strong></p>
+                    <p>Alltech: +55 92 98423-3575</p>
+                    <p>Email: alltech.slt@outlook.com</p>
+                </div>
+                <div class="signature">
+                    <img src="../assets/images/signature.jpg" alt="Assinatura">
+                    <p>Assinatura</p>
+                </div>
+            </div>
+        </footer>
+
+        <button id="generate-pdf">Gerar PDF</button>
+    </div>
+
+    <script>
+        // Recuperar dados do localStorage
+        const receiptData = JSON.parse(localStorage.getItem('receiptData'));
+        if (receiptData) {
+            document.getElementById('buyer').innerText = receiptData.buyer;
+            document.getElementById('company').innerText = receiptData.company;
+            document.getElementById('address').innerText = receiptData.address;
+            document.getElementById('cnpj').innerText = receiptData.cnpj;
+
+            const productList = document.getElementById('product-list');
+            receiptData.products.forEach(product => {
+                productList.innerHTML += `<tr><td>${product.productName}</td><td>${product.quantity}</td></tr>`;
+            });
+
+            document.getElementById('sub-total').innerText = `R$ ${receiptData.subtotal}`;
+            document.getElementById('tax').innerText = `R$ ${receiptData.tax}`;
+
+            const total = parseFloat(receiptData.subtotal) + parseFloat(receiptData.tax);
+            document.getElementById('total').innerText = `R$ ${total.toFixed(2)}`;
+
+            document.getElementById('total-value').innerText = `R$ ${total.toFixed(2)}`;
+        }
+
+        document.getElementById('generate-pdf').addEventListener('click', () => {
+            document.getElementById('generate-pdf').style.display = 'none';
+            window.print();
+            document.getElementById('generate-pdf').style.display = 'block';
+        });
+    </script>
+</body>
+</html>
